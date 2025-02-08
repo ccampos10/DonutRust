@@ -12,15 +12,43 @@ fn move_cursor(){
     print!("\x1b[H");
 }
 
-pub fn render(matriz: Matriz){
+pub fn render_ascii(matriz: Matriz){
     move_cursor();
     // por como funciona el imprimir cosas por pantalla, primero me muevo en y luego en x
     // por cada linea
-    for y in (0..RESOLUCION_Y).rev(){
+    for y in (0..RESOLUCION_VISTA_Y/2){
         // por cada caracter
-        for x in 0..RESOLUCION_X{
-            print!("{}",CHARACTERS[matriz[x][y] as usize]);
+        for x in 0..RESOLUCION_VISTA_X{
+            print!("{}",CHARACTERS[matriz[x][y].0 as usize ]);
         }
         print!("\n");
+    }
+}
+
+pub fn render_color(matriz: Matriz){
+    move_cursor();
+    for y in 0..(RESOLUCION_VISTA_Y/2){ // puede ser par o impar
+        for x in 0..RESOLUCION_VISTA_X{
+            let char;
+            if matriz[x][y*2].0 != 0 && matriz[x][y*2+1].0 != 0{
+                char = '█';
+            }
+            else if matriz[x][y*2].0 != 0 && matriz[x][y*2+1].0 == 0 {
+                char = '▀';
+            }
+            else if matriz[x][y*2].0 == 0 && matriz[x][y*2+1].0 != 0 {
+                char = '▄';
+            }
+            else { char = ' '; }
+
+            let color: u8;
+            if matriz[x][y*2].0 == 0 || matriz[x][y*2+1].0 == 0 { color = 232 + (matriz[x][y*2].0+matriz[x][y*2+1].0); }
+            else { color = 232 + (matriz[x][y*2].0+matriz[x][y*2+1].0)/2; }
+            print!("\x1b[38;5;{}m{}\x1b[0m",color,char);
+            // print!("{}",char);
+            // print!("{}",CHARACTERS[matriz[x][y].0 as usize ]);
+        }
+        print!("\n");
+        // si es impar se esta perdiendo una linea
     }
 }

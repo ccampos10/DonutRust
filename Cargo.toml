@@ -4,3 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+
+# Sección para configuraciones de optimización de compilación
+[profile.release]
+opt-level = 3  # Nivel de optimización más alto
+lto = true      # Optimización de enlace (link-time optimization)
